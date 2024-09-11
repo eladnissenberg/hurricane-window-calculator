@@ -5,6 +5,44 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hurricane Window Savings Calculator</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+    <style>
+        /* Custom scrollbar styling */
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: #D3D3D3;
+            border-radius: 5px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            height: 16px;
+            width: 16px;
+            background: #333;
+            border-radius: 50%;
+            margin-top: -5px;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            background: #333;
+            border-radius: 50%;
+            height: 16px;
+            width: 16px;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-moz-range-track {
+            height: 6px;
+            background: #D3D3D3;
+            border-radius: 5px;
+        }
+
+        /* Ensure responsiveness */
+        iframe {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
     <div id="root"></div>
@@ -62,7 +100,7 @@
             }, [windowCount, windowSize, materialType, currentInsurance, currentUtility, projectionYears]);
 
             return (
-                <div className="p-6 max-w-4xl mx-auto bg-white rounded-lg shadow-md">
+                <div className="p-6 max-w-4xl mx-auto rounded-lg shadow-md" style={{ backgroundColor: '#F0F9F4' }}>
                     <h1 className="text-4xl font-extrabold text-gray-800 mb-4">Hurricane Window Savings Calculator</h1>
                     <p className="mb-6 text-gray-600 leading-relaxed">
                         Estimate your costs and potential savings from installing hurricane impact windows. 
@@ -70,19 +108,18 @@
                     </p>
 
                     {/* Cost Breakdown and Savings */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                        <div className="bg-gray-100 p-4 rounded-lg shadow">
-                            <h2 className="text-lg font-semibold text-gray-700">Total Installation Cost</h2>
-                            <div className="text-3xl font-bold text-gray-800">${formatNumber(totalCost)}</div>
-                        </div>
-                        <div className="bg-gray-100 p-4 rounded-lg shadow">
+                    <div className="flex justify-between items-center mb-6">
+                        <div className="bg-white p-4 rounded-lg shadow w-full mr-4">
                             <h2 className="text-lg font-semibold text-gray-700">Annual Savings</h2>
                             <div className="text-3xl font-bold text-green-600">${formatNumber(annualSavings)}/yr</div>
                         </div>
+                        <button className="bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg font-bold">
+                            Get a Quote
+                        </button>
                     </div>
 
                     {/* Sliders and Inputs */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6" style={{ backgroundColor: '#F0F9F4' }}>
                         <div className="p-4 bg-white rounded-lg shadow">
                             <label className="block mb-2 text-gray-700 font-semibold">Number of Windows</label>
                             <input
@@ -109,7 +146,7 @@
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6" style={{ backgroundColor: '#F0F9F4' }}>
                         <div className="p-4 bg-white rounded-lg shadow">
                             <label className="block mb-2 text-gray-700 font-semibold">Material Type</label>
                             <select
@@ -133,7 +170,7 @@
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6" style={{ backgroundColor: '#F0F9F4' }}>
                         <div className="p-4 bg-white rounded-lg shadow">
                             <label className="block mb-2 text-gray-700 font-semibold">Current Monthly Utility Bill ($)</label>
                             <input
@@ -212,9 +249,11 @@
                         <div className="text-2xl text-gray-800 font-bold">${formatNumber(breakdownSavings.totalLongTermSavings)}</div>
                     </div>
 
-                    <button className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg font-bold">
-                        Get a Quote
-                    </button>
+                    <div className="flex justify-end mt-8">
+                        <button className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg font-bold">
+                            Get a Quote
+                        </button>
+                    </div>
                 </div>
             );
         };
