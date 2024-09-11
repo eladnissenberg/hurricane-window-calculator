@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hurricane Window Savings Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+</head>
+<body>
+    <div id="root"></div>
+    <script src="https://unpkg.com/react/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/babel-standalone"></script>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        const formatNumber = (num) => {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        };
+
+        const HurricaneWindowCalculator = () => {
+            const [windowCount, setWindowCount] = useState(5);
+            const [windowSize, setWindowSize] = useState(24);
+            const [materialType, setMaterialType] = useState('standard');
+            const [currentInsurance, setCurrentInsurance] = useState(1000);
+            const [currentUtility, setCurrentUtility] = useState(200);
+            const [projectionYears, setProjectionYears] = useState(5);
+
+            const [totalCost, setTotalCost] = useState(0);
+            const [taxBenefit, setTaxBenefit] = useState(0);
+            const [monthlySavings, setMonthlySavings] = useState(0);
+            const [breakdownSavings, setBreakdownSavings] = useState({
+                insuranceSavings: 0,
+                utilitySavings: 0,
+                taxBenefitMonthly: 0,
+                longTermSavings: 0
+            });
+
+            useEffect(() => {
+                const baseCost = 50; // per square foot
+                const laborCostPerWindow = 200; // Labor cost per window
+                const materialFactor = { standard: 1, premium: 1.5, luxury: 2 };
+                
+                const materialCost = baseCost * materialFactor[materialType] * windowSize * windowCount;
+                const laborCost = laborCostPerWindow * windowCount; 
+                const calculatedTotalCost = materialCost + laborCost;
+
+                const calculatedTaxBenefit = calculatedTotalCost * 0.2; // 20% tax benefit
+                const annualInsuranceSavings = currentInsurance * 0.45;
+                const monthlyUtilitySavings = currentUtility * 0.12;
+                const taxBenefitMonthly = calculatedTaxBenefit / (projectionYears * 12);
+                const calculatedMonthlySavings = (annualInsuranceSavings / 12) + monthlyUtilitySavings + taxBenefitMonthly;
+                const longTermSavings = calculatedMonthlySavings * 12 * projectionYears;
+
+                setTotalCost(calculatedTotalCost);
+                setTaxBenefit(calculatedTaxBenefit);
+                setMonthlySavings(calculatedMonthlySavings);
+                setBreakdownSavings({
+                    insuranceSavings: annualInsuranceSavings / 12,
+                    utilitySavings: monthlyUtilitySavings,
+                    taxBenefitMonthly: taxBenefitMonthly,
+                    longTermSavings: longTermSavings
+                });
+            }, [windowCount, windowSize, materialType, currentInsurance, currentUtility, projectionYears]);
+
+            return (
+                <div className="p-6 max-w-4xl mx-auto bg-green-50">
+                    <h1 className="text-3xl font-bold mb-4">Hurricane Impact Window Cost & Savings Calculator</h1>
+                    <p className="mb-6 text-gray-600">
+                        Use our calculator to estimate potential savings from installing hurricane impact windows.
+                        Get accurate estimates for your monthly savings on insurance, utility bills, and tax benefits.
+                    </p>
+
+                    {/* Cost Breakdown and Savings */}
+                    <div className="flex justify-between items-center mb-6">
+                        <div>
+                            <h2 className="text-lg font-semibold">Total Installation Cost</h2>
+                            <div className="text-3xl font-bold">${formatNumber(totalCost)}</div>
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-semibold">Monthly Savings</h2>
+                            <div className="text-3xl font-bold">${formatNumber(monthlySavings)}/mo</div>
+                        </div>
+                        <button className="bg-green-700 text-white px-4 py-2 rounded">
+                            Get a Quote
+                        </button>
+                    </div>
+
+                    {/* Sliders and Inputs */}
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block mb-1">Number of Windows</label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="20"
+                                value={windowCount}
+                                onChange={(e) => setWindowCount(Number(e.target.value))}
+                                className="w-full"
+                            />
+                            <div className="text-center mt-2">{windowCount} Windows</div>
+                        </div>
+                        <div>
+                            <label className="block mb-1">Window Size (sq ft)</label>
+                            <input
+                                type="range"
+                                min="10"
+                                max="100"
+                                value={windowSize}
+                                onChange={(e) => setWindowSize(Number(e.target.value))}
+                                className="w-full"
+                            />
+                            <div className="text-center mt-2">{windowSize} sq ft</div>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block mb-1">Material Type</label>
+                            <select
+                                value={materialType}
+                                onChange={(e) => setMaterialType(e.target.value)}
+                                className="w-full p-2 border rounded"
+                            >
+                                <option value="standard">Standard</option>
+                                <option value="premium">Premium</option>
+                                <option value="luxury">Luxury</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block mb-1">Current Annual Insurance ($)</label>
+                            <input
+                                type="number"
+                                value={currentInsurance}
+                                onChange={(e) => setCurrentInsurance(Number(e.target.value))}
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block mb-1">Current Monthly Utility Bill ($)</label>
+                            <input
+                                type="number"
+                                value={currentUtility}
+                                onChange={(e) => setCurrentUtility(Number(e.target.value))}
+                                className="w-full p-2 border rounded"
+                            />
+                        </div>
+                        <div>
+                            <label className="block mb-1">Projection Years</label>
+                            <select
+                                value={projectionYears}
+                                onChange={(e) => setProjectionYears(Number(e.target.value))}
+                                className="w-full p-2 border rounded"
+                            >
+                                {[5, 10, 15, 20, 25, 30].map(year => (
+                                    <option key={year} value={year}>{year} years</option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Breakdown of Savings */}
+                    <div>
+                        <h2 className="text-xl font-bold mb-4">Savings Breakdown</h2>
+                        <div className="grid grid-cols-3 gap-4">
+                            <div>
+                                <h3 className="font-semibold">Insurance Savings</h3>
+                                <div className="text-lg">${formatNumber(breakdownSavings.insuranceSavings)}/mo</div>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Utility Savings</h3>
+                                <div className="text-lg">${formatNumber(breakdownSavings.utilitySavings)}/mo</div>
+                            </div>
+                            <div>
+                                <h3 className="font-semibold">Tax Benefit</h3>
+                                <div className="text-lg">${formatNumber(breakdownSavings.taxBenefitMonthly)}/mo</div>
+                            </div>
+                        </div>
+
+                        <div className="mt-4">
+                            <h3 className="font-semibold">Total Tax Benefit:</h3>
+                            <div className="text-xl font-bold">${formatNumber(taxBenefit)}</div>
+                        </div>
+
+                        <div className="mt-4">
+                            <h3 className="font-semibold">Total Savings over {projectionYears} years:</h3>
+                            <div className="text-xl font-bold">${formatNumber(breakdownSavings.longTermSavings)}</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<HurricaneWindowCalculator />, document.getElementById('root'));
+    </script>
+</body>
+</html>
