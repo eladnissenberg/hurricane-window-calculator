@@ -28,13 +28,12 @@
             const [projectionYears, setProjectionYears] = useState(5);
 
             const [totalCost, setTotalCost] = useState(0);
-            const [taxBenefit, setTaxBenefit] = useState(0);
-            const [monthlySavings, setMonthlySavings] = useState(0);
+            const [annualSavings, setAnnualSavings] = useState(0);
             const [breakdownSavings, setBreakdownSavings] = useState({
-                insuranceSavings: 0,
-                utilitySavings: 0,
-                taxBenefitMonthly: 0,
-                longTermSavings: 0
+                annualInsuranceSavings: 0,
+                annualUtilitySavings: 0,
+                annualTaxBenefit: 0,
+                totalLongTermSavings: 0
             });
 
             useEffect(() => {
@@ -46,21 +45,19 @@
                 const laborCost = laborCostPerWindow * windowCount; 
                 const calculatedTotalCost = materialCost + laborCost;
 
-                const calculatedTaxBenefit = calculatedTotalCost * 0.2; // 20% tax benefit
                 const annualInsuranceSavings = currentInsurance * 0.45;
-                const monthlyUtilitySavings = currentUtility * 0.12;
-                const taxBenefitMonthly = calculatedTaxBenefit / (projectionYears * 12);
-                const calculatedMonthlySavings = (annualInsuranceSavings / 12) + monthlyUtilitySavings + taxBenefitMonthly;
-                const longTermSavings = calculatedMonthlySavings * 12 * projectionYears;
+                const annualUtilitySavings = currentUtility * 12 * 0.12;
+                const annualTaxBenefit = calculatedTotalCost * 0.2 / projectionYears;
+                const totalAnnualSavings = annualInsuranceSavings + annualUtilitySavings + annualTaxBenefit;
+                const totalLongTermSavings = totalAnnualSavings * projectionYears;
 
                 setTotalCost(calculatedTotalCost);
-                setTaxBenefit(calculatedTaxBenefit);
-                setMonthlySavings(calculatedMonthlySavings);
+                setAnnualSavings(totalAnnualSavings);
                 setBreakdownSavings({
-                    insuranceSavings: annualInsuranceSavings / 12,
-                    utilitySavings: monthlyUtilitySavings,
-                    taxBenefitMonthly: taxBenefitMonthly,
-                    longTermSavings: longTermSavings
+                    annualInsuranceSavings,
+                    annualUtilitySavings,
+                    annualTaxBenefit,
+                    totalLongTermSavings
                 });
             }, [windowCount, windowSize, materialType, currentInsurance, currentUtility, projectionYears]);
 
@@ -69,7 +66,7 @@
                     <h1 className="text-4xl font-extrabold text-gray-800 mb-4">Hurricane Window Savings Calculator</h1>
                     <p className="mb-6 text-gray-600 leading-relaxed">
                         Estimate your costs and potential savings from installing hurricane impact windows. 
-                        Adjust the inputs below to calculate how much you could save on your insurance premiums, utility bills, and total tax benefits.
+                        Adjust the inputs below to calculate how much you could save annually on insurance premiums, utility bills, and total tax benefits.
                     </p>
 
                     {/* Cost Breakdown and Savings */}
@@ -79,8 +76,8 @@
                             <div className="text-3xl font-bold text-gray-800">${formatNumber(totalCost)}</div>
                         </div>
                         <div className="bg-gray-100 p-4 rounded-lg shadow">
-                            <h2 className="text-lg font-semibold text-gray-700">Monthly Savings</h2>
-                            <div className="text-3xl font-bold text-green-600">${formatNumber(monthlySavings)}/mo</div>
+                            <h2 className="text-lg font-semibold text-gray-700">Annual Savings</h2>
+                            <div className="text-3xl font-bold text-green-600">${formatNumber(annualSavings)}/yr</div>
                         </div>
                     </div>
 
@@ -160,33 +157,59 @@
                         </div>
                     </div>
 
-                    {/* Breakdown of Savings */}
+                    {/* Savings Breakdown */}
                     <div className="bg-white p-6 rounded-lg shadow mb-6">
                         <h2 className="text-2xl font-bold mb-4 text-gray-700">Savings Breakdown</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+                        <div className="relative h-8 bg-gray-200 rounded-full mb-4">
+                            <div
+                                className="absolute left-0 top-0 h-full bg-green-600 rounded-full"
+                                style={{ width: `${(breakdownSavings.annualInsuranceSavings / annualSavings) * 100}%` }}
+                            ></div>
+                            <div
+                                className="absolute left-0 top-0 h-full bg-blue-500 rounded-full"
+                                style={{
+                                    width: `${(breakdownSavings.annualUtilitySavings / annualSavings) * 100}%`,
+                                    marginLeft: `${(breakdownSavings.annualInsuranceSavings / annualSavings) * 100}%`
+                                }}
+                            ></div>
+                            <div
+                                className="absolute left-0 top-0 h-full bg-yellow-500 rounded-full"
+                                style={{
+                                    width: `${(breakdownSavings.annualTaxBenefit / annualSavings) * 100}%`,
+                                    marginLeft: `${((breakdownSavings.annualInsuranceSavings + breakdownSavings.annualUtilitySavings) / annualSavings) * 100}%`
+                                }}
+                            ></div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-4">
                             <div>
-                                <h3 className="font-semibold text-gray-600">Insurance Savings</h3>
-                                <div className="text-xl text-green-600 font-bold">${formatNumber(breakdownSavings.insuranceSavings)}/mo</div>
+                                <div className="flex items-center">
+                                    <div className="w-4 h-4 bg-green-600 rounded-full mr-2"></div>
+                                    <span>Insurance Savings</span>
+                                </div>
+                                <div className="text-lg font-semibold">${formatNumber(breakdownSavings.annualInsuranceSavings)}/yr</div>
                             </div>
                             <div>
-                                <h3 className="font-semibold text-gray-600">Utility Savings</h3>
-                                <div className="text-xl text-green-600 font-bold">${formatNumber(breakdownSavings.utilitySavings)}/mo</div>
+                                <div className="flex items-center">
+                                    <div className="w-4 h-4 bg-blue-500 rounded-full mr-2"></div>
+                                    <span>Utility Savings</span>
+                                </div>
+                                <div className="text-lg font-semibold">${formatNumber(breakdownSavings.annualUtilitySavings)}/yr</div>
                             </div>
                             <div>
-                                <h3 className="font-semibold text-gray-600">Tax Benefit</h3>
-                                <div className="text-xl text-green-600 font-bold">${formatNumber(breakdownSavings.taxBenefitMonthly)}/mo</div>
+                                <div className="flex items-center">
+                                    <div className="w-4 h-4 bg-yellow-500 rounded-full mr-2"></div>
+                                    <span>Tax Benefit</span>
+                                </div>
+                                <div className="text-lg font-semibold">${formatNumber(breakdownSavings.annualTaxBenefit)}/yr</div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="bg-white p-6 rounded-lg shadow mb-6">
-                        <h3 className="font-semibold text-gray-600">Total Tax Benefit:</h3>
-                        <div className="text-2xl text-gray-800 font-bold">${formatNumber(taxBenefit)}</div>
-                    </div>
-
                     <div className="bg-white p-6 rounded-lg shadow">
                         <h3 className="font-semibold text-gray-600">Total Savings over {projectionYears} years:</h3>
-                        <div className="text-2xl text-gray-800 font-bold">${formatNumber(breakdownSavings.longTermSavings)}</div>
+                        <div className="text-2xl text-gray-800 font-bold">${formatNumber(breakdownSavings.totalLongTermSavings)}</div>
                     </div>
 
                     <button className="mt-8 bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg shadow-lg font-bold">
