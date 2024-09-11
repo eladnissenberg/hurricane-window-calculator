@@ -4,63 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hurricane Window Savings Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
     <style>
-        /* Clean scrollbar styling */
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: #D3D3D3;
-            border-radius: 5px;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            height: 16px;
-            width: 16px;
-            background: #333;
-            border-radius: 50%;
-            margin-top: -5px;
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            background: #333;
-            border-radius: 50%;
-            height: 16px;
-            width: 16px;
-            cursor: pointer;
-        }
-
-        input[type="range"]::-moz-range-track {
-            height: 6px;
-            background: #D3D3D3;
-            border-radius: 5px;
-        }
-
         body {
-            background-color: #F9F7F2; /* Very light green background */
+            font-family: 'Manrope', sans-serif;
+            background-color: #F9F7F2;
         }
 
-        .container {
-            max-width: 1024px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: #FFFFFF; /* White background */
-            border-radius: 8px; /* Smooth corners */
-        }
-
-        .section {
-            margin-bottom: 2rem;
-        }
-
-        /* Remove shadows */
+        /* Remove shadows for cleaner look */
         .no-shadow {
             box-shadow: none;
         }
 
-        /* Simple button */
+        /* Bar colors */
+        .bar-insurance {
+            background-color: #145836;
+        }
+
+        .bar-utility {
+            background-color: #18437B;
+        }
+
+        .bar-tax {
+            background-color: #FF9305;
+        }
+
+        /* Responsive container */
+        .container {
+            max-width: 1024px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
         .simple-button {
-            background-color: #007B5E; /* Dark green for action buttons */
+            background-color: #007B5E;
             color: white;
             padding: 0.75rem 1.5rem;
             border-radius: 6px;
@@ -73,138 +51,151 @@
             background-color: #005a44;
         }
 
+        /* Input styles */
         .input-field {
-            background-color: #F6FAF8; /* Light green for input fields */
-            border: 1px solid #D1D5DB; /* Subtle border */
+            background-color: #F9F7F2;
+            border: 1px solid #D1D5DB;
             padding: 0.75rem;
             border-radius: 4px;
             width: 100%;
             font-size: 1rem;
         }
 
-        h1, h2, p {
-            color: #333333; /* Dark gray text */
+        .copy-button {
+            background-color: #E5E7EB;
+            color: #333;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+        }
+
+        .copy-button:hover {
+            background-color: #D1D5DB;
+        }
+
+        .bar-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .savings-bar {
+            height: 8px;
+            border-radius: 5px;
+            display: flex;
+            width: 70%;
+        }
+
+        .legend {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-item div {
+            height: 15px;
+            width: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div id="root" class="container no-shadow">
-        <h1 class="text-4xl font-bold mb-6">Hurricane Window Savings Calculator</h1>
-        <p class="text-lg text-gray-600 mb-6">
-            Estimate your costs and potential savings from installing hurricane impact windows. Adjust the inputs below to calculate your annual savings on insurance premiums, utility bills, and tax benefits.
-        </p>
+        <!-- Inputs Section -->
+        <div class="p-6 mb-6" style="background-color: #F9F7F2;">
+            <h1 class="text-4xl font-bold mb-6">Hurricane Window Savings Calculator</h1>
+            <p class="text-lg text-gray-600 mb-6">
+                Estimate your costs and potential savings from installing hurricane impact windows. Adjust the inputs below to calculate your annual savings on insurance premiums, utility bills, and tax benefits.
+            </p>
 
-        <!-- Inputs and Results Section -->
-        <div class="section flex justify-between items-center">
-            <div>
-                <h2 class="text-2xl font-semibold mb-2">Annual Savings</h2>
-                <div class="text-3xl font-bold text-green-600">$2,146/yr</div>
-            </div>
-            <button class="simple-button">Get a Quote</button>
-        </div>
+            <!-- Input Fields -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="flex flex-col">
+                    <label for="windows" class="font-semibold mb-2">Number of Windows</label>
+                    <input id="windows" type="range" min="1" max="20" value="5" class="w-full" />
+                    <div class="text-center mt-2 font-bold text-lg">5 Windows</div>
+                </div>
 
-        <!-- Slider Inputs -->
-        <div class="section grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="flex flex-col">
-                <label for="windows" class="font-semibold mb-2">Number of Windows</label>
-                <input
-                    id="windows"
-                    type="range"
-                    min="1"
-                    max="20"
-                    value="5"
-                    class="w-full"
-                />
-                <div class="text-center mt-2 font-bold text-lg">5 Windows</div>
+                <div class="flex flex-col">
+                    <label for="window-size" class="font-semibold mb-2">Window Size (sq ft)</label>
+                    <input id="window-size" type="range" min="10" max="100" value="24" class="w-full" />
+                    <div class="text-center mt-2 font-bold text-lg">24 sq ft</div>
+                </div>
             </div>
 
-            <div class="flex flex-col">
-                <label for="window-size" class="font-semibold mb-2">Window Size (sq ft)</label>
-                <input
-                    id="window-size"
-                    type="range"
-                    min="10"
-                    max="100"
-                    value="24"
-                    class="w-full"
-                />
-                <div class="text-center mt-2 font-bold text-lg">24 sq ft</div>
-            </div>
-        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="flex flex-col">
+                    <label for="material" class="font-semibold mb-2">Material Type</label>
+                    <select id="material" class="input-field">
+                        <option value="standard">Standard</option>
+                        <option value="premium">Premium</option>
+                        <option value="luxury">Luxury</option>
+                    </select>
+                </div>
 
-        <!-- Other Inputs -->
-        <div class="section grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="flex flex-col">
-                <label for="material" class="font-semibold mb-2">Material Type</label>
-                <select id="material" class="input-field">
-                    <option value="standard">Standard</option>
-                    <option value="premium">Premium</option>
-                    <option value="luxury">Luxury</option>
-                </select>
+                <div class="flex flex-col">
+                    <label for="insurance" class="font-semibold mb-2">Current Annual Insurance ($)</label>
+                    <input id="insurance" type="number" class="input-field" value="1000" />
+                </div>
             </div>
 
-            <div class="flex flex-col">
-                <label for="insurance" class="font-semibold mb-2">Current Annual Insurance ($)</label>
-                <input id="insurance" type="number" class="input-field" value="1000" />
-            </div>
-        </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div class="flex flex-col">
+                    <label for="utility" class="font-semibold mb-2">Current Monthly Utility Bill ($)</label>
+                    <input id="utility" type="number" class="input-field" value="200" />
+                </div>
 
-        <div class="section grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div class="flex flex-col">
-                <label for="utility" class="font-semibold mb-2">Current Monthly Utility Bill ($)</label>
-                <input id="utility" type="number" class="input-field" value="200" />
-            </div>
-
-            <div class="flex flex-col">
-                <label for="projection-years" class="font-semibold mb-2">Projection Years</label>
-                <select id="projection-years" class="input-field">
-                    <option value="5">5 years</option>
-                    <option value="10">10 years</option>
-                    <option value="15">15 years</option>
-                    <option value="20">20 years</option>
-                </select>
+                <div class="flex flex-col">
+                    <label for="projection-years" class="font-semibold mb-2">Projection Years</label>
+                    <select id="projection-years" class="input-field">
+                        <option value="5">5 years</option>
+                        <option value="10">10 years</option>
+                        <option value="15">15 years</option>
+                        <option value="20">20 years</option>
+                    </select>
+                </div>
             </div>
         </div>
 
         <!-- Savings Breakdown Section -->
-        <div class="section">
+        <div class="p-6" style="background-color: white;">
             <h2 class="text-2xl font-bold mb-4">Savings Breakdown</h2>
 
-            <div class="relative h-8 bg-gray-200 rounded-full mb-4">
-                <div
-                    class="absolute left-0 top-0 h-full bg-green-600 rounded-full"
-                    style="width: 45%;"
-                ></div>
-                <div
-                    class="absolute left-0 top-0 h-full bg-blue-500 rounded-full"
-                    style="width: 30%; margin-left: 45%;"
-                ></div>
-                <div
-                    class="absolute left-0 top-0 h-full bg-yellow-500 rounded-full"
-                    style="width: 25%; margin-left: 75%;"
-                ></div>
+            <!-- Savings Bar and Total -->
+            <div class="bar-container">
+                <div class="savings-bar">
+                    <div class="bar-insurance" style="width: 45%;"></div>
+                    <div class="bar-utility" style="width: 30%;"></div>
+                    <div class="bar-tax" style="width: 25%;"></div>
+                </div>
+                <div class="text-2xl font-bold ml-4">$6,670/yr</div>
             </div>
 
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <span class="font-bold">Insurance Savings</span>
-                    <div class="text-lg font-semibold">$900/yr</div>
+            <!-- Legend on the right -->
+            <div class="legend mt-4">
+                <div class="legend-item">
+                    <div class="bar-insurance"></div>
+                    <span>Insurance Savings</span>
                 </div>
-                <div>
-                    <span class="font-bold">Utility Savings</span>
-                    <div class="text-lg font-semibold">$720/yr</div>
+                <div class="legend-item">
+                    <div class="bar-utility"></div>
+                    <span>Utility Savings</span>
                 </div>
-                <div>
-                    <span class="font-bold">Tax Benefit</span>
-                    <div class="text-lg font-semibold">$540/yr</div>
+                <div class="legend-item">
+                    <div class="bar-tax"></div>
+                    <span>Tax Benefit</span>
                 </div>
             </div>
-        </div>
 
-        <!-- Long-Term Savings Section -->
-        <div class="section">
-            <h3 class="text-xl font-semibold">Total Savings over 10 years:</h3>
-            <div class="text-2xl font-bold">$21,460</div>
+            <!-- Copy Estimate Link -->
+            <button class="copy-button mt-6">Copy estimate link</button>
         </div>
     </div>
 </body>
