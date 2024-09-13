@@ -71,6 +71,21 @@
             <button class="btn-calculate">Calculate</button>
         </div>
     </div>
-    <script src="script.js"></script>
+<script>
+  function sendHeightToParent() {
+    const height = document.body.scrollHeight;  // Get the height of the content inside the iframe
+    window.parent.postMessage(height, 'https://your-framer-website-url');  // Send height to the parent frame
+  }
+
+  // Send height when the page loads
+  window.onload = sendHeightToParent;
+
+  // Send height after the results are displayed
+  document.querySelector('.btn-calculate').addEventListener('click', function() {
+    setTimeout(sendHeightToParent, 500);  // Add a slight delay to ensure content expands before measuring
+  });
+</script>
+
+<script src="script.js"></script>
 </body>
 </html>
